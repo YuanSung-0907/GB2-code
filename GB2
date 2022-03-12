@@ -1,0 +1,23 @@
+model {
+for (i in 1:5921){
+dummy[i]<-0
+dummy[i]~dloglik(logl1[i])
+logl1[i]<-log(a)+(a*p-1)*(log(y[i])-log(b))-log(b)-logbeta
+-(p+q)*log(1+pow(y[i]/b,a))
+}
+logbeta <- loggam(p)+loggam(q)-loggam(p+q)
+loglike <- sum(logl1[])
+
+a ~ dgamma(0.04,0.01)I(0.1,10)
+b ~ dgamma(1,0.001)I(0.01,10000)
+p ~ dgamma(0.05,0.01)I(1,10000)
+q ~ dgamma(0.01,0.01)I(0.01,10)
+
+
+u ~ dbeta(p,q)I(0.001,0.999)
+u1 <- u/(1-u)
+a1 <- 1/a
+ypred <- b*pow(u1,a1)
+}
+
+list(a=1.3,b=3,p=4.2,q=0.85,u=0.5)
